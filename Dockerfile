@@ -12,6 +12,7 @@ RUN \
   echo "**** install node repo ****" && \
   apt-get update && \
   apt-get install -y \
+  curl \
   gnupg && \
   curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
   echo 'deb https://deb.nodesource.com/node_12.x bionic main' \
