@@ -107,4 +107,6 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
   ln -s /usr/bin/clang-cl-$LLVM /usr/bin/clang-cl && \
   ln -s /usr/bin/clang-cpp-$LLVM /usr/bin/clang-cpp && \
   ln -s /usr/bin/clang-tidy-$LLVM /usr/bin/clang-tidy && \
-  ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd
+  ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd\
+  && rm -rf /tmp/* \
+  && rm -rf /var/lib/apt/lists/*
