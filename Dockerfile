@@ -72,7 +72,7 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
   gcc-multilib \
   g++-multilib \
   gdb \
-  && pkg-config \
+  pkg-config \
   && apt-get clean \
   rm -rf \
   /tmp/* \
