@@ -43,7 +43,7 @@ RUN \
   CODE_RELEASE=$(curl -sX GET "https://api.github.com/repos/cdr/code-server/releases/latest" \
   | awk '/tag_name/{print $4;exit}' FS='[""]'); \
   fi && \
-  CODE_VERSION=$(echo "$CODE_RELEASE" | awk '{print substr($1,2); }') && \
+  CODE_VERSION=$(echo "$CODE_RELEASE" | awk '{print substr($1,1); }') && \
   yarn --production global add code-server@"$CODE_VERSION" && \
   yarn cache clean && \
   ln -s /node_modules/.bin/code-server /usr/bin/code-server && \
