@@ -71,7 +71,7 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
   clang-tidy-$LLVM \
   gcc-multilib \
   g++-multilib \
-  && gdb  \
+  gdb \
   && pkg-config \
   && apt-get clean \
   rm -rf \
