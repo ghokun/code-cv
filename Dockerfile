@@ -109,3 +109,6 @@ RUN curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
   ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd\
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /projects \
+  && chown -R abc:abc /projects
