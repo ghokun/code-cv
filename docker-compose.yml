@@ -15,7 +15,7 @@ services:
       - PASSWORD=password
       - SUDO_PASSWORD=password
     volumes:
-      - ~/code-cv-config:/config
+      - $CONFIG_PATH:/config
     networks:
       - x11
     ports:
@@ -46,7 +46,7 @@ services:
     ports:
       - 8787:8787
     volumes:
-      - "$source_code_path:/home/rstudio"
+      - $CONFIG_PATH:/home/rstudio
     restart: unless-stopped
 
 networks:
