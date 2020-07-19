@@ -8,7 +8,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   git \
   ca-certificates \
   curl \
-  wget \
   r-base \
   && cd /opt \
   && git clone https://github.com/stevengj/nlopt.git \
@@ -92,7 +91,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   && rm -rf /tmp/*
 
 # Install clangd
-RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
+RUN curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
   echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" > /etc/apt/sources.list.d/llvm.list && \
   apt-get update && \
   apt-get install -y  \
