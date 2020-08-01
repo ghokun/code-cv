@@ -8,7 +8,7 @@ services:
     depends_on:
       - novnc
     environment:
-      - DISPLAY=novnc:0.0
+      - DISPLAY=code-vnc:0.0
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
@@ -18,13 +18,13 @@ services:
       - $CONFIG_PATH:/config
       - $PROJECTS_PATH:/projects
     networks:
-      - x11
+      - code
     ports:
       - 443:8443
     restart: unless-stopped
 
-  novnc:
-    container_name: novnc
+  code-vnc:
+    container_name: code-vnc
     image: theasp/novnc:latest
     environment:
       - DISPLAY_WIDTH=1280
@@ -34,16 +34,16 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - x11
+      - code
     restart: unless-stopped
 
-  rstudio:
-    container_name: rstudio
+  code-r:
+    container_name: code-r
     image: rocker/rstudio
     environment:
       - PASSWORD=yourpasswordhere
     networks:
-      - x11
+      - code
     ports:
       - 8787:8787
     volumes:
@@ -51,4 +51,4 @@ services:
     restart: unless-stopped
 
 networks:
-  x11:
+  code:

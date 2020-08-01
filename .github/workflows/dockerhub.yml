@@ -1,0 +1,43 @@
+name: dockerhub
+
+on:
+  push:
+    tags:
+      - "*"
+    paths-ignore:
+      - README.md
+      - .github/workflows/*
+
+env:
+  IMAGE_NAME: ghokun/code-cv
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . -t $IMAGE_NAME
+
+      - name: Log into registry
+        run: echo "${{ secrets.dockerhub }}" | docker login -u ${{ github.actor }} --password-stdin
+
+      - name: Push images
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          CURRENT=$IMAGE_NAME:$VERSION
+          LATEST=$IMAGE_NAME:latest
+
+          docker tag $IMAGE_NAME $CURRENT
+          docker tag $IMAGE_NAME $LATEST
+
+          docker push $CURRENT
+          docker push $LATEST
