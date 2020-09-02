@@ -1,4 +1,4 @@
-FROM linuxserver/code-server:latest
+FROM linuxserver/code-server:v3.5.0-ls48
 
 # Install nlopt, R
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
