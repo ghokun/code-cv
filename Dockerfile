@@ -91,7 +91,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   && rm -rf /tmp/*
 
 # Install clangd
-ARG LLVM=11
+ARG LLVM=12
 RUN curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
   echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" > /etc/apt/sources.list.d/llvm.list && \
   apt-get update && \
