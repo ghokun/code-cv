@@ -3,7 +3,7 @@ version: "3.3"
 
 services:
   code-server:
-    image: ghokun/code-cv
+    image: ghcr.io/ghokun/code-cv
     container_name: code-cv
     depends_on:
       - novnc

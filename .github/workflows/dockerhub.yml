@@ -1,18 +1,45 @@
-name: dockerhub
+name: Docker
 
 on:
   push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+
+    # Publish `v1.2.3` tags as releases.
     tags:
-      - "*"
-    paths-ignore:
-      - README.md
-      - .github/workflows/*
+      - v*
+
+  # Run tests for any PRs.
+  pull_request:
 
 env:
-  IMAGE_NAME: ghokun/code-cv
+  IMAGE_NAME: code-cv
 
 jobs:
+  # Run tests.
+  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        run: |
+          if [ -f docker-compose.test.yml ]; then
+            docker-compose --file docker-compose.test.yml build
+            docker-compose --file docker-compose.test.yml run sut
+          else
+            docker build . --file Dockerfile
+          fi
+
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
   push:
+    # Ensure test job passes before pushing image.
+    needs: test
+
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
@@ -20,24 +47,29 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . -t $IMAGE_NAME
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
-      - name: Log into registry
-        run: echo "${{ secrets.dockerhub }}" | docker login -u ${{ github.actor }} --password-stdin
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Push images
+      - name: Push image to GitHub Container Registry
         run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
-          CURRENT=$IMAGE_NAME:$VERSION
-          LATEST=$IMAGE_NAME:latest
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
 
-          docker tag $IMAGE_NAME $CURRENT
-          docker tag $IMAGE_NAME $LATEST
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
 
-          docker push $CURRENT
-          docker push $LATEST
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
