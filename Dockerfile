@@ -87,8 +87,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   && ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime \
   && rm -rf /opt/opencv \
   && rm -rf /opt/opencv_contrib \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /tmp/*
+  && rm -rf /tmp/* \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install clangd
 ARG LLVM=12
@@ -107,9 +107,26 @@ RUN curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
   ln -s /usr/bin/clang-cl-$LLVM /usr/bin/clang-cl && \
   ln -s /usr/bin/clang-cpp-$LLVM /usr/bin/clang-cpp && \
   ln -s /usr/bin/clang-tidy-$LLVM /usr/bin/clang-tidy && \
-  ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd\
+  ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd \
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /projects \
   && chown -R abc:abc /projects
+
+# Install fluxbox novnc x11vnc
+EXPOSE 8080
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+  && apt-get install -qq -y --no-install-recommends \
+  net-tools \
+  novnc \
+  supervisor \
+  x11vnc \
+  xvfb \
+  fluxbox \
+  && rm -rf /tmp/* \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY /coder /config/.config/code-server
+COPY /novnc /app
+CMD ["supervisord", "-c", "/app/supervisord.conf"]

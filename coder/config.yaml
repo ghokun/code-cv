@@ -1,4 +1,4 @@
-bind-addr: 0.0.0.0:443
+bind-addr: 0.0.0.0:8443
 auth: password
 password: 193da96a4f4c0c2ce54222d8
 cert: true

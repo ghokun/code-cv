@@ -5,50 +5,17 @@ services:
   code-server:
     image: ghcr.io/ghokun/code-cv
     container_name: code-cv
-    depends_on:
-      - novnc
     environment:
-      - DISPLAY=code-vnc:0.0
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
       - PASSWORD=password
       - SUDO_PASSWORD=password
-    volumes:
-      - $CONFIG_PATH:/config
-      - $PROJECTS_PATH:/projects
-    networks:
-      - code
-    ports:
-      - 443:8443
-    restart: unless-stopped
-
-  code-vnc:
-    container_name: code-vnc
-    image: theasp/novnc:latest
-    environment:
       - DISPLAY_WIDTH=1280
       - DISPLAY_HEIGHT=800
-      - RUN_XTERM=no
-      - RUN_FLUXBOX=yes
-    ports:
-      - "8080:8080"
-    networks:
-      - code
-    restart: unless-stopped
-
-  code-r:
-    container_name: code-r
-    image: rocker/rstudio
-    environment:
-      - PASSWORD=yourpasswordhere
-    networks:
-      - code
-    ports:
-      - 8787:8787
     volumes:
-      - $PROJECTS_PATH:/home/rstudio
+      - $PROJECTS_PATH:/projects
+    ports:
+      - 443:8443
+      - 8080:8080
     restart: unless-stopped
-
-networks:
-  code:
