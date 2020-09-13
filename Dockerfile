@@ -127,6 +127,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/*
 
-COPY /coder /config/.config/code-server
-COPY /novnc /app
+COPY ./coder /config/.config/code-server
+COPY ./novnc /app
 CMD ["supervisord", "-c", "/app/supervisord.conf"]
