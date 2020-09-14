@@ -111,22 +111,6 @@ RUN curl -L https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/*
 
+COPY ./coder /config/.config/code-server
 RUN mkdir -p /projects \
   && chown -R abc:abc /projects
-
-# Install fluxbox novnc x11vnc
-EXPOSE 8080
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-  && apt-get install -qq -y --no-install-recommends \
-  net-tools \
-  novnc \
-  supervisor \
-  x11vnc \
-  xvfb \
-  fluxbox \
-  && rm -rf /tmp/* \
-  && rm -rf /var/lib/apt/lists/*
-
-COPY ./coder /config/.config/code-server
-COPY ./novnc /app
-CMD ["supervisord", "-c", "/app/supervisord.conf"]
